@@ -1,114 +1,54 @@
-# Telegram Video Router Bot — Railway + PostgreSQL
+# Telegram Media Router Bot — Photos + Vidéos
 
-Bot Telegram silencieux dans les groupes sources :
-- détecte automatiquement les groupes où il est ajouté ;
-- permet aux admins, en privé, de choisir les groupes SOURCE et le groupe CIBLE ;
-- transfère les vidéos des sources vers la cible ;
-- ne répond jamais dans les groupes sources ;
-- notifie uniquement les admins en privé en cas d’erreur ;
-- crée automatiquement les tables PostgreSQL au démarrage ;
-- affiche un bouton **Infos** avec l’état et les statistiques.
+Bot Telegram silencieux dans les groupes sources.
 
-## Déploiement Railway
+## Il transfère quoi ?
 
-### 1. Créer le bot Telegram
+Il transfère :
+- photos Telegram natives ;
+- vidéos Telegram natives ;
+- documents dont le MIME type commence par `image/` ;
+- documents dont le MIME type commence par `video/`.
 
-Avec BotFather :
-```txt
-/newbot
-```
+Il ignore :
+- textes ;
+- audios ;
+- stickers ;
+- PDF ;
+- autres documents non image/vidéo.
 
-Récupère le token.
+## Fonctions
 
-Important : pour que le bot voie les messages dans les groupes, désactive la privacy :
-```txt
-/setprivacy
-Disable
-```
+- groupes sources illimités ;
+- 1 groupe cible ;
+- admin seulement par `ADMIN_IDS` ;
+- interface admin uniquement en privé via `/start` ;
+- aucun message dans les groupes sources ;
+- bouton Infos avec état + stats ;
+- création automatique des tables PostgreSQL ;
+- retry automatique sur `Flood control exceeded` et `Timed out`.
 
-### 2. Déployer sur Railway
-
-Ajoute un service PostgreSQL Railway.
-
-Variables d’environnement Railway :
+## Variables Railway
 
 ```env
-BOT_TOKEN=123456:ABC...
+BOT_TOKEN=123456:ABC
 DATABASE_URL=${{Postgres.DATABASE_URL}}
 ADMIN_IDS=123456789,987654321
 FORWARD_CAPTION=true
 LOG_LEVEL=INFO
 ```
 
-`ADMIN_IDS` = tes IDs Telegram numériques.
+## Important BotFather
 
-Pour connaître ton ID Telegram, tu peux écrire à `@userinfobot`.
-
-### 3. Ajouter le bot dans les groupes
-
-Ajoute le bot :
-- dans chaque groupe source ;
-- dans le groupe cible.
-
-Le bot mémorise automatiquement les groupes.
-
-Dans les groupes, le bot reste muet.
-
-### 4. Utiliser l’admin
-
-Ouvre le bot en privé, puis envoie :
+Pour voir les messages dans les groupes :
 
 ```txt
-/start
+/setprivacy
+Disable
 ```
 
-Menu :
-- Groupes
-- Infos
-- Statistiques
-
-Dans **Groupes**, tu peux :
-- définir un groupe comme source ;
-- retirer une source ;
-- définir un groupe comme cible.
-
-Le bot fonctionne dès qu’il y a :
-- au moins 1 source ;
-- 1 cible.
-
-## Lancer en local
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-python app/main.py
-```
-
-## Notes importantes
-
-Le bot utilise `file_id`, donc il ne télécharge pas les vidéos. Il les renvoie via Telegram.
-
-Le bot ne supprime jamais les messages originaux.
-
-
-## Correction importante
-
-Le bot doit être lancé avec :
+## Lancement
 
 ```bash
 python -m app.main
-```
-
-et pas :
-
-```bash
-python app/main.py
-```
-
-Sinon Railway peut afficher :
-
-```txt
-ModuleNotFoundError: No module named 'app'
 ```
