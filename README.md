@@ -1,3 +1,1 @@
-# Telegram Moderation Bot
-
-Railway-ready project scaffold.
+# Full Telegram Moderation Bot Template
