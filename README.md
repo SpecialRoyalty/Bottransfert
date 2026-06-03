@@ -91,3 +91,24 @@ python app/main.py
 Le bot utilise `file_id`, donc il ne télécharge pas les vidéos. Il les renvoie via Telegram.
 
 Le bot ne supprime jamais les messages originaux.
+
+
+## Correction importante
+
+Le bot doit être lancé avec :
+
+```bash
+python -m app.main
+```
+
+et pas :
+
+```bash
+python app/main.py
+```
+
+Sinon Railway peut afficher :
+
+```txt
+ModuleNotFoundError: No module named 'app'
+```
